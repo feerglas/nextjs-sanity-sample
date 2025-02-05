@@ -4,18 +4,6 @@ import { defineField, defineType } from "sanity";
 
 import authorType from "./author";
 
-/**
- * This file is the schema definition for a post.
- *
- * Here you'll be able to edit the different fields that appear when you 
- * create or edit a post in the studio.
- * 
- * Here you can see the different schema types that are available:
-
-  https://www.sanity.io/docs/schema-types
-
- */
-
 export default defineType({
   name: "post",
   title: "Post",
@@ -24,7 +12,7 @@ export default defineType({
   fields: [
     defineField({
       name: "title",
-      title: "Title",
+      title: "Titel",
       type: "string",
       validation: (rule) => rule.required(),
     }),
@@ -32,7 +20,7 @@ export default defineType({
       name: "slug",
       title: "Slug",
       type: "slug",
-      description: "A slug is required for the post to show up in the preview",
+      description: "Der Slug ist Pflicht. Er ist teil der URL dieses Newseintrags",
       options: {
         source: "title",
         maxLength: 96,
@@ -42,13 +30,13 @@ export default defineType({
     }),
     defineField({
       name: "content",
-      title: "Content",
+      title: "Inhalt",
       type: "array",
       of: [{ type: "block" }],
     }),
     defineField({
       name: "excerpt",
-      title: "Excerpt",
+      title: "Zusammenfassung",
       type: "text",
     }),
     defineField({
@@ -102,7 +90,7 @@ export default defineType({
     prepare({ title, media, author, date }) {
       const subtitles = [
         author && `by ${author}`,
-        date && `on ${format(parseISO(date), "LLL d, yyyy")}`,
+        date && `on ${format(parseISO(date), "d. LLL, yyyy")}`,
       ].filter(Boolean);
 
       return { title, media, subtitle: subtitles.join(" ") };

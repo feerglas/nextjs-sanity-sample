@@ -11,10 +11,11 @@ import DateComponent from "../../date";
 import MoreStories from "../../more-stories";
 import PortableText from "../../portable-text";
 
-import * as demo from "@/sanity/lib/demo";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { postQuery, settingsQuery } from "@/sanity/lib/queries";
 import { resolveOpenGraphImage } from "@/sanity/lib/utils";
+import { lang } from "../../config";
+import { baseLang } from "@/sanity/schemas/localeStringType";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -32,32 +33,16 @@ export async function generateStaticParams() {
   });
 }
 
-export async function generateMetadata(
-  { params }: Props,
-  parent: ResolvingMetadata,
-): Promise<Metadata> {
-  const post = await sanityFetch({
-    query: postQuery,
-    params,
-    stega: false,
-  });
-  const previousImages = (await parent).openGraph?.images || [];
-  const ogImage = resolveOpenGraphImage(post?.coverImage);
-
-  return {
-    authors: post?.author?.name ? [{ name: post?.author?.name }] : [],
-    title: post?.title,
-    description: post?.excerpt,
-    openGraph: {
-      images: ogImage ? [ogImage, ...previousImages] : previousImages,
-    },
-  } satisfies Metadata;
-}
-
 export default async function PostPage({ params }: Props) {
   const [post, settings] = await Promise.all([
     sanityFetch({ query: postQuery, params }),
-    sanityFetch({ query: settingsQuery }),
+    sanityFetch({
+      query: settingsQuery,
+      params: {
+        lang,
+        baseLang
+      },
+    }),
   ]);
 
   if (!post?._id) {
@@ -68,7 +53,7 @@ export default async function PostPage({ params }: Props) {
     <div className="container mx-auto px-5">
       <h2 className="mb-16 mt-10 text-2xl font-bold leading-tight tracking-tight md:text-4xl md:tracking-tighter">
         <Link href="/" className="hover:underline">
-          {settings?.title || demo.title}
+          {settings?.title}
         </Link>
       </h2>
       <article>

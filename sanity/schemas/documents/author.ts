@@ -15,14 +15,14 @@ export default defineType({
     }),
     defineField({
       name: "picture",
-      title: "Picture",
+      title: "Bild",
       type: "image",
       fields: [
         {
           name: "alt",
           type: "string",
           title: "Alternative text",
-          description: "Important for SEO and accessiblity.",
+          description: "Wichtig für SEO und accessiblity.",
           validation: (rule) => {
             return rule.custom((alt, context) => {
               if ((context.document?.picture as any)?.asset?._ref && !alt) {
