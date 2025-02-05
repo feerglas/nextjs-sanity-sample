@@ -7,6 +7,7 @@ import {
 } from "next-sanity";
 import { Inter } from "next/font/google";
 import { draftMode } from "next/headers";
+import Head from 'next/head';
 
 import AlertBanner from "./alert-banner";
 
@@ -25,6 +26,10 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={`${inter.variable} bg-white text-black`}>
+      <Head>
+        <meta name="robots" content="noindex,nofollow" />
+        <meta name="googlebot" content="noindex,nofollow" />
+      </Head>
       <body>
         <section className="min-h-screen">
           {isDraftMode && <AlertBanner />}
