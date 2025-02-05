@@ -14,8 +14,7 @@ import PortableText from "../../portable-text";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { postQuery, settingsQuery } from "@/sanity/lib/queries";
 import { resolveOpenGraphImage } from "@/sanity/lib/utils";
-import { lang } from "../../config";
-import { baseLang } from "@/sanity/schemas/localeStringType";
+import { lang, baseLang } from "../../config";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -41,7 +40,7 @@ export default async function PostPage({ params }: Props) {
       params: {
         lang,
         baseLang
-      },
+      }
     }),
   ]);
 

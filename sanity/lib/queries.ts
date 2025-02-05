@@ -1,10 +1,16 @@
-import { defineQuery } from "next-sanity";
+import { defineQuery, groq } from "next-sanity";
 
 export const settingsQuery = defineQuery(`
   *[_type == "settings"][0] {
-    "title": coalesce(title[$lang], title[$baseLang], "Missing translation"),
+    "title": coalesce(
+      title[_key == $lang][0].value,
+      title[_key == $baseLang][0].value
+    ),
     _id,
-    "description": coalesce(description[$lang], description[$baseLang], "Missing translation"),
+    "description": coalesce(
+      description[_key == $lang][0].value,
+      description[_key == $baseLang][0].value
+    ),
   }
 `);
 

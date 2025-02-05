@@ -11,10 +11,9 @@ import type { HeroQueryResult } from "@/sanity.types";
 
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { heroQuery, settingsQuery } from "@/sanity/lib/queries";
-import { lang } from "./config";
-import { baseLang } from "@/sanity/schemas/localeStringType";
+import { lang, baseLang } from "./config";
 
-function Intro(props: { title: string | null | undefined; description: any }) {
+function Intro(props: { title: string | null | undefined; description?: string | null | undefined }) {
   return (
     <section className="mt-16 mb-16 flex flex-col items-center lg:mb-12 lg:flex-row lg:justify-between">
       <h1 className="text-balance text-6xl font-bold leading-tight tracking-tighter lg:pr-8 lg:text-8xl">
@@ -76,7 +75,8 @@ export default async function Page() {
       params: {
         lang,
         baseLang,
-      },
+      }
+
     }),
     sanityFetch({ query: heroQuery }),
   ]);

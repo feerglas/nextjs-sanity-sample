@@ -206,16 +206,12 @@ export type Settings = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  title?: LocaleString;
-  description?: LocaleString;
-};
-
-export type LocaleString = {
-  _type: "localeString";
-  de?: string;
-  fr?: string;
-  it?: string;
-  en?: string;
+  title?: Array<{
+    _key: string;
+  } & InternationalizedArrayStringValue>;
+  description?: Array<{
+    _key: string;
+  } & InternationalizedArrayStringValue>;
 };
 
 export type SanityAssistInstructionTask = {
@@ -339,27 +335,24 @@ export type SanityAssistSchemaTypeField = {
   } & SanityAssistInstruction>;
 };
 
-export type AllSanitySchemaTypes = SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityFileAsset | Geopoint | Post | Author | SanityImageCrop | SanityImageHotspot | SanityImageAsset | SanityAssetSourceData | SanityImageMetadata | Slug | Settings | LocaleString | SanityAssistInstructionTask | SanityAssistTaskStatus | SanityAssistSchemaTypeAnnotations | SanityAssistOutputType | SanityAssistOutputField | SanityAssistInstructionContext | AssistInstructionContext | SanityAssistInstructionUserInput | SanityAssistInstructionPrompt | SanityAssistInstructionFieldRef | SanityAssistInstruction | SanityAssistSchemaTypeField;
+export type InternationalizedArrayStringValue = {
+  _type: "internationalizedArrayStringValue";
+  value?: string;
+};
+
+export type InternationalizedArrayString = Array<{
+  _key: string;
+} & InternationalizedArrayStringValue>;
+
+export type AllSanitySchemaTypes = SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityFileAsset | Geopoint | Post | Author | SanityImageCrop | SanityImageHotspot | SanityImageAsset | SanityAssetSourceData | SanityImageMetadata | Slug | Settings | SanityAssistInstructionTask | SanityAssistTaskStatus | SanityAssistSchemaTypeAnnotations | SanityAssistOutputType | SanityAssistOutputField | SanityAssistInstructionContext | AssistInstructionContext | SanityAssistInstructionUserInput | SanityAssistInstructionPrompt | SanityAssistInstructionFieldRef | SanityAssistInstruction | SanityAssistSchemaTypeField | InternationalizedArrayStringValue | InternationalizedArrayString;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./sanity/lib/queries.ts
 // Variable: settingsQuery
-// Query: *[_type == "settings"][0] {    "title": coalesce(title[$lang], title[$baseLang], "Missing translation"),    _id,    "description": coalesce(description[$lang], description[$baseLang], "Missing translation"),  }
+// Query: *[_type == "settings"][0] {    "title": coalesce(      title[_key == $lang][0].value,      title[_key == $baseLang][0].value    ),    _id,    "description": coalesce(      description[_key == $lang][0].value,      description[_key == $baseLang][0].value    ),  }
 export type SettingsQueryResult = {
-  title: Array<{
-    _type: "localeString";
-    de?: string;
-    fr?: string;
-    it?: string;
-    en?: string;
-  }> | "Missing translation";
+  title: string | null;
   _id: string;
-  description: Array<{
-    _type: "localeString";
-    de?: string;
-    fr?: string;
-    it?: string;
-    en?: string;
-  }> | "Missing translation";
+  description: string | null;
 } | null;
 // Variable: heroQuery
 // Query: *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) [0] {    content,      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage,  "date": coalesce(date, _updatedAt),  "author": author->{"name": coalesce(name, "Anonymous"), picture},  }
@@ -520,7 +513,7 @@ export type PostSlugsResult = Array<{
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    "\n  *[_type == \"settings\"][0] {\n    \"title\": coalesce(title[$lang], title[$baseLang], \"Missing translation\"),\n    _id,\n    \"description\": coalesce(description[$lang], description[$baseLang], \"Missing translation\"),\n  }\n": SettingsQueryResult;
+    "\n  *[_type == \"settings\"][0] {\n    \"title\": coalesce(\n      title[_key == $lang][0].value,\n      title[_key == $baseLang][0].value\n    ),\n    _id,\n    \"description\": coalesce(\n      description[_key == $lang][0].value,\n      description[_key == $baseLang][0].value\n    ),\n  }\n": SettingsQueryResult;
     "\n  *[_type == \"post\" && defined(slug.current)] | order(date desc, _updatedAt desc) [0] {\n    content,\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  excerpt,\n  coverImage,\n  \"date\": coalesce(date, _updatedAt),\n  \"author\": author->{\"name\": coalesce(name, \"Anonymous\"), picture},\n\n  }\n": HeroQueryResult;
     "\n  *[_type == \"post\" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  excerpt,\n  coverImage,\n  \"date\": coalesce(date, _updatedAt),\n  \"author\": author->{\"name\": coalesce(name, \"Anonymous\"), picture},\n\n  }\n": MoreStoriesQueryResult;
     "\n  *[_type == \"post\" && slug.current == $slug] [0] {\n    content,\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  excerpt,\n  coverImage,\n  \"date\": coalesce(date, _updatedAt),\n  \"author\": author->{\"name\": coalesce(name, \"Anonymous\"), picture},\n\n  }\n": PostQueryResult;

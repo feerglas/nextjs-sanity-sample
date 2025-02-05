@@ -11,13 +11,15 @@ export default defineType({
       name: "title",
       description: "Titel der News Startseite",
       title: "Titel",
-      type: "localeString",
+      type: "internationalizedArrayString",
+    }, {
+      strict: false
     }),
     defineField({
       name: "description",
       description: "Subtitel der News Startseite",
       title: "Subtitle",
-      type: "localeString",
+      type: "internationalizedArrayString",
     }),
   ],
   preview: {

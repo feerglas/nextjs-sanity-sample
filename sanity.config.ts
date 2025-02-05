@@ -19,8 +19,8 @@ import { assistWithPresets } from "@/sanity/plugins/assist";
 import author from "@/sanity/schemas/documents/author";
 import post from "@/sanity/schemas/documents/post";
 import settings from "@/sanity/schemas/singletons/settings";
-import { localeString } from "./sanity/schemas/localeStringType";
 import { resolveHref } from "@/sanity/lib/utils";
+import {internationalizedArray} from 'sanity-plugin-internationalized-array'
 
 const homeLocation = {
   title: "Home",
@@ -38,10 +38,31 @@ export default defineConfig({
       // Documents
       post,
       author,
-      localeString
     ],
   },
   plugins: [
+    internationalizedArray({
+      languages: [
+        {
+          id: 'de',
+          title: 'Deutsch'
+        },
+        {
+          id: 'fr',
+          title: 'Französisch'
+        },
+        {
+          id: 'it',
+          title: 'Italienisch'
+        },
+        {
+          id: 'en',
+          title: 'Englisch'
+        },
+      ],
+      defaultLanguages: ['de'],
+      fieldTypes: ['string'],
+    }),
     presentationTool({
       resolve: {
         mainDocuments: defineDocuments([
